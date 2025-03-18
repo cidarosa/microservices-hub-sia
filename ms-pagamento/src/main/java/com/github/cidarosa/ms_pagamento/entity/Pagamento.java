@@ -22,7 +22,7 @@ public class Pagamento {
     private BigDecimal valor;
     private String nome;
     private String numeroDoCartao;     // xxxx xxxx xxxx xxxx
-    private String Validade;           // MM/AA
+    private String validade;           // MM/AA
     private String codigoDeSeguranca;  // xxx
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
