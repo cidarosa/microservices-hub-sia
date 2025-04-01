@@ -99,5 +99,16 @@ public class PagamentoServiceTest {
                 }
         );
     }
+
+    @Test
+    public void createPagamentoShouldReturnPagamentoDTOWhenPagamentoIsCreated(){
+
+        dto = service.createPagamento(dto);
+        Assertions.assertNotNull(dto);
+        Assertions.assertEquals(dto.getId(), pagamento.getId());
+        Assertions.assertEquals(dto.getNome(), pagamento.getNome());
+    }
+
+    
 }
 
