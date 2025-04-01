@@ -101,7 +101,7 @@ public class PagamentoServiceTest {
     }
 
     @Test
-    public void createPagamentoShouldReturnPagamentoDTOWhenPagamentoIsCreated(){
+    public void createPagamentoShouldReturnPagamentoDTOWhenPagamentoIsCreated() {
 
         dto = service.createPagamento(dto);
         Assertions.assertNotNull(dto);
@@ -109,6 +109,22 @@ public class PagamentoServiceTest {
         Assertions.assertEquals(dto.getNome(), pagamento.getNome());
     }
 
-    
+    @Test
+    public void updatePagamentoShouldReturnPagamentoDTOWhenIdExists() {
+
+        service.updatePagamento(existingId, dto);
+        Assertions.assertNotNull(dto);
+        Assertions.assertEquals(dto.getId(), existingId);
+        Assertions.assertEquals(dto.getValor(), pagamento.getValor());
+    }
+
+    @Test
+    public void updatePagamentoShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() {
+
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> {
+                    service.updatePagamento(nonExistingId, dto);
+                });
+    }
 }
 
