@@ -18,9 +18,11 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
 public class PagamentoControllerTest {
@@ -40,7 +42,7 @@ public class PagamentoControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setup() throws Exception{
+    void setup() throws Exception {
         existingId = 1L;
         nonExistingId = 100L;
 
@@ -58,6 +60,10 @@ public class PagamentoControllerTest {
         Mockito.when(service.getById(nonExistingId))
                 .thenThrow(ResourceNotFoundException.class);
 
+        // simulando o comportamento do service - createPagamento
+        // any() simula o comportamento de qualquer objeto
+        Mockito.when(service.createPagamento(any())).thenReturn(dto);
+
     }
 
     @Test
@@ -71,7 +77,7 @@ public class PagamentoControllerTest {
     }
 
     @Test
-    public void getByIdShouldReturnPagamentoDTOWhenIdExists() throws Exception{
+    public void getByIdShouldReturnPagamentoDTOWhenIdExists() throws Exception {
         ResultActions result = mockMvc.perform(get("/pagamentos/{id}", existingId)
                 .accept(MediaType.APPLICATION_JSON)
         );
@@ -86,7 +92,7 @@ public class PagamentoControllerTest {
     }
 
     @Test
-    public void getByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() throws Exception{
+    public void getByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() throws Exception {
 
         ResultActions result = mockMvc.perform(get("/pagamentos/{id}", nonExistingId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -94,7 +100,30 @@ public class PagamentoControllerTest {
 
         // Assertions
         result.andExpect(status().isNotFound());
+    }
 
+    @Test
+    public void createPagamentoShouldReturnPagamentoDTOCreated() throws Exception {
+
+        PagamentoDTO newPagamentoDTO = Factory.createNewPagamentoDTO();
+
+        // Bean - objectMapper - usado para converter JAVA para JSON
+        String jsonRequestBody = objectMapper.writeValueAsString(newPagamentoDTO);
+
+        // POST - tem corpo na requisição (RequestBody) - JSON
+
+        mockMvc.perform(post("/pagamentos")
+                        .content(jsonRequestBody) //Request\body
+                        .contentType(MediaType.APPLICATION_JSON) //request
+                        .accept(MediaType.APPLICATION_JSON))  //response
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.valor").exists())
+                .andExpect(jsonPath("$.status").exists())
+                .andExpect(jsonPath("$.pedidoId").exists())
+                .andExpect(jsonPath("$.formaDePagamentoId").exists());
 
     }
 
