@@ -124,7 +124,6 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$.status").exists())
                 .andExpect(jsonPath("$.pedidoId").exists())
                 .andExpect(jsonPath("$.formaDePagamentoId").exists());
-
     }
 
 
