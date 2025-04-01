@@ -1,6 +1,7 @@
 package com.github.cidarosa.ms_pagamento.service;
 
 import com.github.cidarosa.ms_pagamento.repository.PagamentoRepository;
+import com.github.cidarosa.ms_pagamento.service.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,16 @@ public class PagamentoServiceTest {
                 }
         );
 
+    }
+
+    @Test
+    @DisplayName("delete Deveria lançar exceção ResourceNotFoundException quando Id não existe")
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
+
+        Assertions.assertThrows(ResourceNotFoundException.class,
+                () -> {
+                    service.deletePagamento(nonExistingId);
+                });
     }
 }
 
