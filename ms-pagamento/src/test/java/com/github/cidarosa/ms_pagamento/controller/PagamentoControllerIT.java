@@ -32,7 +32,7 @@ public class PagamentoControllerIT {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setup() throws Exception{
+    void setup() throws Exception {
         existingId = 1L;
         nonExistingId = 50L;
         dto = Factory.createPagamentoDTO();
@@ -42,7 +42,7 @@ public class PagamentoControllerIT {
     public void getAllShouldReturnListAllPagamentos() throws Exception {
 
         mockMvc.perform(get("/pagamentos")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
 
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -51,12 +51,32 @@ public class PagamentoControllerIT {
                 .andExpect(jsonPath("[0].nome").isString())
                 .andExpect(jsonPath("[0].nome").value("Amadeus Mozart"))
                 .andExpect(jsonPath("[5].status").value("CONFIRMADO"));
-
-
     }
 
+    @Test
+    public void getByIdShouldReturnPagamentoDTOWhenIdExists() throws Exception {
 
+        mockMvc.perform(get("/pagamentos/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("nome").isString())
+                .andExpect(jsonPath("nome").value("Amadeus Mozart"))
+                .andExpect(jsonPath("status").value("CRIADO"));
+    }
 
+    @Test
+    public void getByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() throws Exception {
+
+        mockMvc.perform(get("/pagamentos/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
 
 }
