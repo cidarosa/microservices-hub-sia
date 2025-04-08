@@ -173,11 +173,28 @@ public class PagamentoControllerIT {
         dto = Factory.createNewPagamentoDTOWithInvalidData();
         String jsonRequestBody = objectMapper.writeValueAsString(dto);
         mockMvc.perform(put("/pagamentos/{id}", existingId)
-                .content(jsonRequestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
+
+        mockMvc.perform(delete("/pagamentos/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+
+        mockMvc.perform(delete("/pagamentos/{id}", nonExistingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
