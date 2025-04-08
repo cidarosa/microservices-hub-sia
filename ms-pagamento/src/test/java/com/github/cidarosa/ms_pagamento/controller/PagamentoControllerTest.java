@@ -19,9 +19,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,6 +70,12 @@ public class PagamentoControllerTest {
         Mockito.when(service.updatePagamento(eq(nonExistingId), any()))
                 .thenThrow(ResourceNotFoundException.class);
 
+        //simulando o comportamento do service - deletePagamento
+        // id existe
+        Mockito.doNothing().when(service).deletePagamento(existingId);
+        // id não existe
+        Mockito.doThrow(ResourceNotFoundException.class)
+                .when(service).deletePagamento(nonExistingId);
     }
 
     @Test
@@ -170,4 +174,22 @@ public class PagamentoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void deletePagamentoShouldDoNothingWhenIdExists() throws Exception{
+
+        mockMvc.perform(delete("/pagamentos/{id}", existingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deletePagementoShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() throws Exception{
+
+        mockMvc.perform(delete("/pagamentos/{id}", nonExistingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
 }
