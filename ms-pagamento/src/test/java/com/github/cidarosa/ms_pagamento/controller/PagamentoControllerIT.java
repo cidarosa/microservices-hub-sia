@@ -160,11 +160,24 @@ public class PagamentoControllerIT {
 
         String jsonRequestBody = objectMapper.writeValueAsString(dto);
         mockMvc.perform(put("/pagamentos/{id}", nonExistingId)
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void updateShouldThrowsExceptionWhenInvalidData() throws Exception {
+
+        dto = Factory.createNewPagamentoDTOWithInvalidData();
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+        mockMvc.perform(put("/pagamentos/{id}", existingId)
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }
