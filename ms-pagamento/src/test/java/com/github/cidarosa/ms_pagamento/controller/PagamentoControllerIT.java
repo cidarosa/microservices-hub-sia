@@ -13,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -138,5 +137,23 @@ public class PagamentoControllerIT {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    public void updateShouldUpdateAndReturnPagamentoDToWhenIdExists() throws Exception {
+
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+        mockMvc.perform(put("/pagamentos/{id}", existingId)
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("valor").exists())
+                .andExpect(jsonPath("valor").value(dto.getValor()))
+                .andExpect(jsonPath("status").exists())
+                .andExpect(jsonPath("status").value("CRIADO"));
+
+    }
 
 }
