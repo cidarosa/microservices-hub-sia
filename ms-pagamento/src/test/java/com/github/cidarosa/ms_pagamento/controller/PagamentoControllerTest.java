@@ -157,4 +157,17 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$.formaDePagamentoId").value(2));
     }
 
+    @Test
+    public void updatePagamentoShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() throws Exception {
+
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+
+        mockMvc.perform(put("/pagamentos/{id}", nonExistingId)
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 }
