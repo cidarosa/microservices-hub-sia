@@ -5,7 +5,6 @@ import com.github.cidarosa.ms_pagamento.dto.PagamentoDTO;
 import com.github.cidarosa.ms_pagamento.service.PagamentoService;
 import com.github.cidarosa.ms_pagamento.service.exceptions.ResourceNotFoundException;
 import com.github.cidarosa.ms_pagamento.tests.Factory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,8 +18,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,6 +64,13 @@ public class PagamentoControllerTest {
         // simulando o comportamento do service - createPagamento
         // any() simula o comportamento de qualquer objeto
         Mockito.when(service.createPagamento(any())).thenReturn(dto);
+
+        //simulando o comportamento do service - updatePagamento
+        // id existe
+        Mockito.when(service.updatePagamento(eq(existingId), any())).thenReturn(dto);
+        // id não existe
+        Mockito.when(service.updatePagamento(eq(nonExistingId), any()))
+                .thenThrow(ResourceNotFoundException.class);
 
     }
 
@@ -113,7 +121,7 @@ public class PagamentoControllerTest {
         // POST - tem corpo na requisição (RequestBody) - JSON
 
         mockMvc.perform(post("/pagamentos")
-                        .content(jsonRequestBody) //Request\body
+                        .content(jsonRequestBody) //Request body
                         .contentType(MediaType.APPLICATION_JSON) //request
                         .accept(MediaType.APPLICATION_JSON))  //response
                 .andDo(print())
@@ -121,10 +129,32 @@ public class PagamentoControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.valor").exists())
+                .andExpect(jsonPath("$.valor").value(32.25))
                 .andExpect(jsonPath("$.status").exists())
+                .andExpect(jsonPath("$.status").isString())
+                .andExpect(jsonPath("$.status").value("CRIADO"))
                 .andExpect(jsonPath("$.pedidoId").exists())
                 .andExpect(jsonPath("$.formaDePagamentoId").exists());
     }
 
+    @Test
+    public void updatePagamentoShouldReturnPagamentoDTOWhenIdExists() throws Exception {
+
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+
+        mockMvc.perform(put("/pagamentos/{id}", existingId)
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(existingId))
+                .andExpect(jsonPath("status").exists())
+                .andExpect(jsonPath("$.pedidoId").exists())
+                .andExpect(jsonPath("$.pedidoId").value(1))
+                .andExpect(jsonPath("$.formaDePagamentoId").exists())
+                .andExpect(jsonPath("$.formaDePagamentoId").value(2));
+    }
 
 }
