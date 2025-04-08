@@ -57,8 +57,5 @@ public class PagamentoServiceIT {
         Assertions.assertNull(result.get(5).getNome());
         Assertions.assertEquals(null, result.get(5).getNome());
         Assertions.assertEquals(null, result.get(4).getValidade());
-
-
-
     }
 }
