@@ -18,9 +18,9 @@ public class PedidoController {
     private PedidoService service;
 
     @GetMapping
-    public ResponseEntity<List<PedidoDTO>> findAllPedidos(){
+    public ResponseEntity<List<PedidoDTO>> getAllPedidos(){
 
-        List<PedidoDTO> list = service.getAllPedidos();
+        List<PedidoDTO> list = service.findAllPedidos();
         return ResponseEntity.ok(list);
     }
 

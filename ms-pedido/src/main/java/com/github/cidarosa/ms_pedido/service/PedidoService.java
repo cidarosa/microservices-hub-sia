@@ -17,7 +17,7 @@ public class PedidoService {
     private PedidoRepository repository;
 
     @Transactional(readOnly = true)
-    public List<PedidoDTO> getAllPedidos(){
+    public List<PedidoDTO> findAllPedidos(){
         return  repository.findAll()
                 .stream().map(PedidoDTO::new).toList();
     }
