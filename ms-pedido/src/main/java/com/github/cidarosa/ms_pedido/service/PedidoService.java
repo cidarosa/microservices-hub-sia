@@ -2,6 +2,7 @@ package com.github.cidarosa.ms_pedido.service;
 
 import com.github.cidarosa.ms_pedido.dto.PedidoDTO;
 import com.github.cidarosa.ms_pedido.entities.Pedido;
+import com.github.cidarosa.ms_pedido.repositories.ItemDoPedidoRepository;
 import com.github.cidarosa.ms_pedido.repositories.PedidoRepository;
 import com.github.cidarosa.ms_pedido.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class PedidoService {
 
     @Autowired
     private PedidoRepository repository;
+
+    @Autowired
+    private ItemDoPedidoRepository itemDoPedidoRepository;
 
     @Transactional(readOnly = true)
     public List<PedidoDTO> findAllPedidos(){

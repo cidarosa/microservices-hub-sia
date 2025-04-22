@@ -1,6 +1,7 @@
 package com.github.cidarosa.ms_pedido.controller;
 
 import com.github.cidarosa.ms_pedido.dto.PedidoDTO;
+import com.github.cidarosa.ms_pedido.repositories.ItemDoPedidoRepository;
 import com.github.cidarosa.ms_pedido.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
