@@ -19,7 +19,11 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "nome", nullable = false, length = 100)
     private String nome;
+    // @Column(unique = true, nullable = false, length = 11)
+    @Column(nullable = false)
     private String cpf;
     private LocalDate data;
     @Enumerated(EnumType.STRING)
