@@ -1,5 +1,6 @@
 package com.github.cidarosa.ms_pedido.dto;
 
+import com.github.cidarosa.ms_pedido.entities.ItemDoPedido;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -27,5 +28,10 @@ public class ItemDoPedidoDTO {
     @Positive(message = "Valor unitário deve ser um número positivo")
     private BigDecimal valorUnitario;
 
-
+    public ItemDoPedidoDTO(ItemDoPedido entity) {
+        id = entity.getId();
+        quantidade = entity.getQuantidade();
+        descricao = entity.getDescricao();
+        valorUnitario = entity.getValorUnitario();
+    }
 }
