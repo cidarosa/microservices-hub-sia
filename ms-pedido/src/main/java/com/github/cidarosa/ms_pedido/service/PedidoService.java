@@ -57,20 +57,30 @@ public class PedidoService {
     @Transactional
     public PedidoDTO updatePedido(Long id, PedidoDTO dto){
 
-        try{
+        try {
+            // Exclui os itens antigos
+            itemDoPedidoRepository.deleteByPedidoId(id);
+
             Pedido entity = repository.getReferenceById(id);
             entity.setData(LocalDate.now());
             entity.setStatus(Status.REALIZADO);
-            // excluir os itens do pedido antigo
-            itemDoPedidoRepository.deleteByPedidoId(id);
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
+            // Atualiza os itens com os novos dados
             itemDoPedidoRepository.saveAll(entity.getItens());
             return new PedidoDTO(entity);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
         }
 
+    }
+
+    public void deletePedido(Long id){
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("Recurso não encontrado. Id: " + id);
+        }
+
+        repository.deleteById(id);
     }
 
     private void copyDtoToEntity(PedidoDTO dto, Pedido entity) {

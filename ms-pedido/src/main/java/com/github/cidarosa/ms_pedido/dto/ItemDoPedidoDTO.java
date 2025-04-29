@@ -18,7 +18,7 @@ public class ItemDoPedidoDTO {
 
     private Long id;
 
-    @NotNull(message = "Quantidade requirida")
+    @NotNull(message = "Quantidade requerida")
     @Positive(message = "Quantidade deve ser um número positivo")
     private Integer quantidade;
 
