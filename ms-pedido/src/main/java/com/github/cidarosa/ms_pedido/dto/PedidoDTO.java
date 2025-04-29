@@ -6,6 +6,7 @@ import com.github.cidarosa.ms_pedido.entities.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,12 @@ public class PedidoDTO {
 
     private Long id;
 
-    @NotEmpty(message = "Nome requerido")
+    @NotBlank(message = "Nome requerido")
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     private String nome;
 
     // @CPF(message = "Informe um CPF válido")
-    @NotEmpty(message = "CPF requerido")
+    @NotBlank(message = "CPF requerido")
     @Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres - sem máscara")
     private String cpf;
 
@@ -38,6 +39,7 @@ public class PedidoDTO {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @NotEmpty(message = "Pedido deve ter pelo menos um item do pedido")
     private List<@Valid ItemDoPedidoDTO> itens = new ArrayList<>();
 
     public PedidoDTO(Pedido entity) {
