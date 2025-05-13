@@ -5,6 +5,7 @@ import com.github.cidarosa.ms_pedido.repositories.ItemDoPedidoRepository;
 import com.github.cidarosa.ms_pedido.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +19,12 @@ public class PedidoController {
 
     @Autowired
     private PedidoService service;
+
+    @GetMapping("/port")
+    public String getPort(@Value("${local.server.port}") String porta){
+
+        return String.format("Request da instância recebida na porta %s ", porta);
+    }
 
     @GetMapping
     public ResponseEntity<List<PedidoDTO>> getAllPedidos(){
